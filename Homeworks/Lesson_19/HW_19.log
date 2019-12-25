@@ -1,0 +1,13 @@
+ 2019-12-03 12:34:55,522   Car mooving forvard. 
+ 2019-12-03 12:34:55,536   Car stopped. 
+ 2019-12-03 12:34:55,543   Car mooving back. 
+ 2019-12-03 12:34:55,549   Car stopped. 
+ 2019-12-03 12:36:41,211 INFO Car mooving forvard. 
+ 2019-12-03 12:36:41,221 INFO Car stopped. 
+ 2019-12-03 12:36:41,224 INFO Car mooving back. 
+ 2019-12-03 12:36:41,228 INFO Car stopped. 
+ 2019-12-03 12:38:11,098 INFO Car mooving forvard. 
+ 2019-12-03 12:38:11,101 DEBUG Attempt to reverse with moving forward. 
+ 2019-12-03 12:38:11,106 INFO Car stopped. 
+ 2019-12-03 12:38:11,110 INFO Car mooving back. 
+ 2019-12-03 12:38:11,114 INFO Car stopped. 
