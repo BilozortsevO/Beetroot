@@ -27,39 +27,32 @@ try:
             latlong = get_coordinates(exif)
             declatlong = get_decimal_coordinates (exif)
             pic = Photo_data(str(file), str(date),
-                             str(time), str(latlong),
-                             str(declatlong))
+                             str(time), latlong,
+                             declatlong)
             points.append (pic)
 except FileNotFoundError:
     pass
 
-f = open ('doc.kml', 'w')
+
 
 kml_list = KML.Folder()
 
 for i in points:
-    lat_long = i.coordinates.split(',')
-    doc = KML.kml(
-    KML.Placemark(
-        KML.name(i.file_name),
-        KML.LookAt(KML.latitude(lat_long[0]),
-                   KML.longitude(lat_long[1])
-        #,KML.LineString(KML.extrude('1'),
-        #              KML.coordinates(),
-                  ),
-                  ),
-                  )
-    f = open ('doc.kml', 'a')
+    doc = KML.Placemark(
+          KML.name(i.file_name),
+          KML.Point(KML.coordinates(str(i.deccoordinates[1])+','+str(i.deccoordinates[0]))))
     kml_list.append(doc)
-print (etree.tostring(kml_list))
-f.write (str(etree.tostring(kml_list)))
+#print (str(etree.tostring(kml_list, pretty_print=True).decode ('utf-8')))
 
+f = open ('doc.kml', 'w')
+f.write (str(etree.tostring(kml_list, pretty_print=True).decode ('utf-8')))
+f.close()
     
     
 
 #print(points[0])
 
-for i in points:
-    print (i)
+#for i in points:
+#   print (i)
 
 #os.rename(src, dst, *, src_dir_fd=None, dst_dir_fd=None)
