@@ -2,13 +2,11 @@ import os
 import GPS_point_Class
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
+from collections import OrderedDict
+from lxml import etree
+from pykml.factory import KML_ElementMaker as KML
 
-os.chdir (r'C:\Users\AleksandrB\Documents\GitHub\Beetroot\GPS')
-mainpath = r'C:\Users\AleksandrB\Documents\GitHub\Beetroot\GPS'
-try:
-	original = Image.open('2019-08-21 17.33.37.jpg')
-except FileNotFoundError:
-	print('Файл не найден')
+Nearest_points_quantity = 4
 
 
 def getexif(filename):
@@ -56,21 +54,39 @@ def get_decimal_coordinates(info):
 	if  'Latitude' in info and 'Longitude' in info:
 		return [info['Latitude'], info['Longitude']]
 			 
-points = []
-for r, d, f in os.walk(mainpath):
-	for file in f:
-		if file.lower().endswith(('.png','.jpg','.jpeg')):
-			filepath = os.path.join(r, file)
-			picture = Image.open(filepath)
-			exif = getexif (picture)
-			latlong = get_decimal_coordinates (exif)
-			points.append (latlong)
-points.sort()
-#for i in range(len(points)):
-#	print (points[i])
-#print(fdate(getexif(original)))
-#print(ftime(getexif(original)))
-#print (get_coordinates (getexif(original)))
-#print (get_decimal_coordinates (getexif(original)))
-#print (getexif(original))
-#print(original.format, original.size, original.mode)
+def search_min_dist(pholo_list):
+    for i in range(len(pholo_list)):
+        dist_dict = {}
+        for j in range(len(pholo_list)):
+            if i != j:
+                dist = pholo_list[i] - pholo_list[j]
+                dist_atr = {pholo_list[j].file_name:dist}
+                dist_dict.update(dist_atr)
+        dist_atribute_dict = dict(OrderedDict(sorted(dist_dict.items(), key = lambda t : t[1])))
+        while len(dist_atribute_dict) > Nearest_points_quantity:
+            dist_atribute_dict.popitem()
+        pholo_list[i].distances = dist_atribute_dict
+'''
+def near_point_coord (point):
+	coord_dict = {}
+	near_dict = point.distances
+	if point.file_name in near_dict.keys():
+		cd = {point.file_name:point.deccoordinates}
+		coord_dict.update(cd)
+	return coord_dict
+'''
+def make_KML_placemarks(points):
+	kml_list = KML.Folder()
+	for i in points:
+		point_coord = str(i.deccoordinates[1])+','+str(i.deccoordinates[0])
+		doc = KML.Placemark(
+			KML.name(i.file_name),
+			KML.Point(KML.coordinates(point_coord)),
+			#KML.LineString(KML.extrude(1), KML.coordinates())
+			)
+		kml_list.append(doc)
+	#print (str(etree.tostring(kml_list, pretty_print=True).decode ('utf-8')))
+
+	f = open ('doc.kml', 'w')
+	f.write (str(etree.tostring(kml_list, pretty_print=True).decode ('utf-8')))
+	f.close()
