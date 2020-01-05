@@ -1,8 +1,7 @@
 import os
 from GPS_new_func import *
 from GPS_point_Class import * 
-from lxml import etree
-from pykml.factory import KML_ElementMaker as KML
+
 
 #if os.path.exists(os.getcwd()+'\IN_PHOTO'):
 #    os.chdir(os.getcwd()+'\IN_PHOTO')
@@ -10,8 +9,10 @@ from pykml.factory import KML_ElementMaker as KML
 #    newdir = input('Введите адрес директории: ')
 #    os.chdir (newdir)
 
+
 os.chdir (r'C:\Users\AleksandrB\Documents\GitHub\Beetroot\GPS')
 print ('Текущая директория: ' + str(os.getcwd()))
+
 
 file_list = os.listdir(os.getcwd())
 pictures_list = list(filter(lambda x: x.endswith('.jpg'), file_list))
@@ -34,25 +35,11 @@ except FileNotFoundError:
     pass
 
 
+search_min_dist(points)
 
-kml_list = KML.Folder()
+print (points[1])
 
-for i in points:
-    doc = KML.Placemark(
-          KML.name(i.file_name),
-          KML.Point(KML.coordinates(str(i.deccoordinates[1])+','+str(i.deccoordinates[0]))))
-    kml_list.append(doc)
-#print (str(etree.tostring(kml_list, pretty_print=True).decode ('utf-8')))
+make_KML_placemarks(points)
 
-f = open ('doc.kml', 'w')
-f.write (str(etree.tostring(kml_list, pretty_print=True).decode ('utf-8')))
-f.close()
-    
-    
-
-#print(points[0])
-
-#for i in points:
-#   print (i)
 
 #os.rename(src, dst, *, src_dir_fd=None, dst_dir_fd=None)
